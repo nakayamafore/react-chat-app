@@ -1,25 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useEffect, useState } from "react"
+import { GraphQLClient } from "graphql-request"
+import List from "./Components/List"
 
-function App() {
+const queryUserAll = `
+query UsersQuery {
+  userAll {
+    userId
+    email
+    userName
+    role
+  }
+}`
+const client = new GraphQLClient("http://localhost:8080/graphql")
+export default function App() {
+  const [user, setUser] = useState([])
+  useEffect(() => {
+    client.request(queryUserAll, {})
+      .then(results => {
+        const { userAll } = results
+        setUser(userAll)
+      })
+      .catch(console.error);
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <List data={user}></List>
     </div>
   );
 }
-
-export default App;
