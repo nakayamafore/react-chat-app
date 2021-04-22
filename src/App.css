@@ -36,3 +36,92 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  margin: 0;
+  background: skyblue;
+}
+
+.container {
+  padding: 32px;
+}
+
+.messages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  padding-bottom: 80px;
+}
+
+.messages li {
+  display: flex;
+}
+
+.messages li + li {
+  margin-top: 32px;
+}
+
+li.right-side {
+  flex-direction: row-reverse;
+}
+
+.pic {
+  width: 80px;
+  text-align: center;
+}
+
+.pic img {
+  width: 48px;
+  height:48px;
+  border-radius: 50%;
+}
+
+.txt {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 60%;
+  line-height: 1.8;
+  position: relative; /* 相対位置 */
+}
+
+.txt::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  position: absolute; /* 絶対位置 */
+}
+
+/* 吹き出しの三角を作成する */
+.left-side .txt::before {
+  top: 12px;
+  left: -16px;
+  border-right-color: #fff;
+}
+
+/* 吹き出しの三角を作成する */
+.right-side .txt::before {
+  top: 12px;
+  right: -16px;
+  border-left-color: #fff;
+}
+
+.input-fooder {
+  position: fixed;
+  bottom:0;
+  /* left: 20%; */
+  border-radius: 4px;
+  padding: 5px;
+  max-width: 100%;
+  width: 100%;
+  background: #e6e6fa;
+}
+.input-text {
+  border-radius: 4px;
+  padding: 8px;
+  width: 80%;
+}
+.send-button {
+  padding: 6px;
+}

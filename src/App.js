@@ -1,32 +1,38 @@
 import './App.css';
-import React, { useEffect, useState } from "react"
-import { GraphQLClient } from "graphql-request"
-import List from "./Components/List"
+import React, { useEffect } from "react"
+import { Routes, Route, useNavigate } from "react-router-dom"
+import Login from "./Components/Login"
+import Chat from "./Components/Chat"
 
-const queryUserAll = `
-query UsersQuery {
-  userAll {
-    userId
-    email
-    userName
-    role
-  }
-}`
-const client = new GraphQLClient("http://localhost:8080/graphql")
-export default function App() {
-  const [user, setUser] = useState([])
+
+const loadJSON = key => key && JSON.parse(localStorage.getItem(key))
+const AuthRoute = ({ ...props }) => {
+  let navigate = useNavigate()
+  const isAuthenticated = loadJSON(`isAuthenticated`)
+  const token = loadJSON(`token`)
+
   useEffect(() => {
-    client.request(queryUserAll, {})
-      .then(results => {
-        const { userAll } = results
-        setUser(userAll)
-      })
-      .catch(console.error);
-  }, [])
+    if (props.path !== "/login" && (!isAuthenticated || !token)) {
+      navigate(`/login`)
+    }
+  }, [isAuthenticated, token, navigate, props.path])
 
+  if (isAuthenticated) {
+    return <Route {...props} />
+  } else {
+    console.log(`ログインしていないユーザーは${props.path}へはアクセスできません`)
+    return <></>
+  }
+}
+export default function App() {
   return (
     <div className="App">
-      <List data={user}></List>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <AuthRoute path="/chat" element={<Chat />} />
+      </Routes>
+
     </div>
   );
 }
