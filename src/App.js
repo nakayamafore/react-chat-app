@@ -4,7 +4,6 @@ import { Routes, Route, useNavigate } from "react-router-dom"
 import Login from "./Components/Login"
 import Chat from "./Components/Chat"
 
-
 const loadJSON = key => key && JSON.parse(localStorage.getItem(key))
 const AuthRoute = ({ ...props }) => {
   let navigate = useNavigate()
