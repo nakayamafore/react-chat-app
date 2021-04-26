@@ -1,15 +1,13 @@
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect } from "react"
 import SockJS from 'sockjs-client'
 import Stomp from 'stomp-websocket'
 import Navivation from '../Components/Navigation'
-import { InView } from 'react-intersection-observer';
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const loadJSON = key => key && JSON.parse(localStorage.getItem(key))
 export default function Chat() {
     const [messages, setMessages] = useState([{ content: "welcome room!" }, { content: "please select room" }]);
-    const [lastViewedDate, setLastViewedDate] = useState("");
     const [content, setContent] = useState('');
     const [rooms, setRooms] = useState([{}]);
     const [selectRooms, setSelectRooms] = useState([{}]);
@@ -17,13 +15,9 @@ export default function Chat() {
     const [userId] = useState(loadJSON(`userId`));
     const [roomUserId, setRoomUserId] = useState(0);
     const [isChatSubscribe, setIsChatSubscribe] = useState(false);
-    const [isChatStatusSubscribe, setIsChatStatusSubscribe] = useState(false);
-
-
     const chatWsUrl = `${API_ENDPOINT}/chat-ws`
     const chatApiUrlBase = `${API_ENDPOINT}/api/chat?roomId=`
     const roomApiUrlBase = `${API_ENDPOINT}/api/roomUsers?userId=`
-
 
     useEffect(() => {
         console.log("loadRooms")
@@ -119,9 +113,8 @@ export default function Chat() {
         };
         setIsChatSubscribe(false)
         chatClient.connect(headers, function () {
-
-            console.log('[[chat Connected:]]');
-            const chatSubId = 'chat-subscription-id-001'
+            console.log('[[chat Connected]]');
+            const chatSubId = 'chat-sub-id-001'
             var chatHeaders = {
                 "x-jwt-token": token,
                 "id": chatSubId
@@ -140,35 +133,11 @@ export default function Chat() {
                 var bottom = element.scrollHeight - element.clientHeight;
                 window.scroll(0, bottom);
             }, chatHeaders)
-            const chatStatusSubId = 'chat-status-subscription-id-001'
-            var chatStatusHeaders = {
-                "x-jwt-token": token,
-                "id": chatStatusSubId
-            };
-            const subscribeId = chatClient.subscribe('/topic/chatStatus', function (payload) {
-                console.log('chatStatus Subscribe Recieved: ' + payload.body);
-                console.log('roomId, roomUserId: ' + roomId + ", " + roomUserId);
-                const json = JSON.parse(payload.body)
-                console.log(roomUserId)
-                if (json.roomId !== roomId) {
-                    console.log("cancel chatStatus Subscribe Recieved: json.roomId: " + json.roomId + ", roomId: " + roomId);
-                    return
-                }
-                if (json.roomUserId === roomUserId) {
-                    console.log("cancel chatStatus Subscribe Recieved: json.roomUserId: " + json.roomUserId);
-                    return
-                }
-                console.log('[update lastViewedDate]: ' + json.lastViewedDate);
-                setLastViewedDate(json.lastViewedDate);
-            }, chatStatusHeaders);
-            console.log(`subscribeId :${subscribeId}`)
-            setIsChatStatusSubscribe(subscribeId ? true : false)
-            handleViewEvent()
         });
-        // return () => {
-        //     console.log('Disconnecting..');
-        //     stompClient.disconnect();
-        // };
+        return () => {
+            console.log('[[chat Disconnecting..]]');
+            chatClient.disconnect();
+        };
     }, [roomUserId]);
 
     const handleButtonClick = (e) => {
@@ -181,82 +150,10 @@ export default function Chat() {
         const token = loadJSON(`token`)
         var chatHeaders = {
             "x-jwt-token": token,
-            // "id": chatSubId
         };
 
         chatClient.send("/app/chat", chatHeaders, JSON.stringify(aMessage));
         setContent('');
-    }
-
-    // const statusSocket = new SockJS(chatWsUrl);
-    // const statusClient = Stomp.over(statusSocket);
-    // const chatStatusSubId = 'chat-status-subscription-id-001'
-    // useEffect(() => {
-    //     console.log('chatStatus Connectinng..');
-    //     console.log('roomUserId :' + roomUserId)
-    //     if (isChatStatusSubscribe) {
-    //         console.log('cancel chatStatus Connectinng.. still connect');
-    //         return
-    //     }
-    //     if (!roomUserId || roomUserId === 0) {
-    //         console.log('cancel chatStatus Connectinng..');
-    //         return
-    //     }
-    //     const token = loadJSON(`token`)
-    //     var headers = {
-    //         "x-jwt-token": token
-    //     };
-    //     statusClient.connect(headers, function () {
-    //         console.log('[[chatStatus Connected:]]');
-    //         setIsChatStatusSubscribe(false)
-    //         var chatStatusHeaders = {
-    //             "x-jwt-token": token,
-    //             "id": chatStatusSubId
-    //         };
-    //         const subscribeId = statusClient.subscribe('/topic/chatStatus', function (payload) {
-    //             console.log('chatStatus Subscribe Recieved: ' + payload.body);
-    //             console.log('roomId, roomUserId: ' + roomId + ", " + roomUserId);
-    //             const json = JSON.parse(payload.body)
-    //             console.log(roomUserId)
-    //             if (json.roomId !== roomId) {
-    //                 console.log("cancel chatStatus Subscribe Recieved: json.roomId: " + json.roomId + ", roomId: " + roomId);
-    //                 return
-    //             }
-    //             if (json.roomUserId === roomUserId) {
-    //                 console.log("cancel chatStatus Subscribe Recieved: json.roomUserId: " + json.roomUserId);
-    //                 return
-    //             }
-    //             console.log('[update lastViewedDate]: ' + json.lastViewedDate);
-    //             setLastViewedDate(json.lastViewedDate);
-    //         }, chatStatusHeaders);
-    //         console.log(`subscribeId :${subscribeId}`)
-    //         setIsChatStatusSubscribe(subscribeId ? true : false)
-    //     });
-    //     // return () => {
-    //     //     console.log('Disconnecting..');
-    //     //     stompClient.disconnect();
-    //     // };
-    // }, [roomUserId, roomId]);
-
-    const handleViewEvent = async (e) => {
-        console.log("handleViewEvent isChatStatusSubscribe :" + isChatStatusSubscribe)
-        if (!isChatStatusSubscribe) return
-        await new Promise(resolve => {
-            console.log("handleViewEvent sleep")
-            setTimeout(resolve, 1000)
-        })
-        const body = {
-            roomUserId,
-            roomId
-        };
-        console.log("chatStatus message-send")
-        console.log(body)
-        const token = loadJSON(`token`)
-        var chatStatusHeaders = {
-            "x-jwt-token": token,
-            // "id": chatStatusSubId
-        };
-        chatClient.send("/app/chatStatus", chatStatusHeaders, JSON.stringify(body));
     }
 
     const handleInputChange = (e) => {
@@ -290,25 +187,17 @@ export default function Chat() {
                                     <div className="txt">--no-data--</div>
                                 </li>
                             }
-                            const isRead = (data.createdDatetime < lastViewedDate)
                             const className = (data.userId === userId) ? "left-side" : "right-side"
                             const imageUrl = (data.userId === userId)
                                 ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
                                 : "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png"
                             return (
-                                <InView onChange={(inView, entry) => {
-                                    if (!isRead && inView) {
-                                        handleViewEvent()
-                                    }
-                                }}>
-                                    <li className={className} key={idx}>
-                                        <div className="pic">
-                                            <img src={imageUrl} alt={data.name} />
-                                            {(isRead) && <div>既読</div>}
-                                        </div>
-                                        <div className="txt">{data.content}</div>
-                                    </li>
-                                </InView>
+                                <li className={className} key={idx}>
+                                    <div className="pic">
+                                        <img src={imageUrl} alt={data.name} />
+                                    </div>
+                                    <div className="txt">{data.content}</div>
+                                </li>
                             );
                         })
                     }
