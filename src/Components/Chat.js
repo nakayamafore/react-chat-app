@@ -2,6 +2,7 @@
 import React from "react"
 import Navivation from '../Components/Navigation'
 import useChat from '../Hooks/useChat'
+import dayjs from 'dayjs'
 
 export default function Chat() {
     const {
@@ -25,10 +26,13 @@ export default function Chat() {
                             const imageUrl = (data.userId === userId)
                                 ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
                                 : "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png"
+                            const time = dayjs(data.createdDatetime).format("HH:mm");
+                            console.log(time)
                             return (
                                 <li className={className} key={idx}>
                                     <div className="pic">
                                         <img src={imageUrl} alt={data.name} />
+                                        <div className="time">{time}</div>
                                     </div>
                                     <div className="txt">{data.content}</div>
                                 </li>

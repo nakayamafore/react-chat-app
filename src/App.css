@@ -84,6 +84,11 @@ li.right-side {
   line-height: 1.8;
   position: relative; /* 相対位置 */
 }
+.time {
+  position: relative; /* 相対位置 */
+  color: #a4abb3;
+  font-size: calc(3px + 2vmin);
+}
 
 .txt::before {
   content: '';
