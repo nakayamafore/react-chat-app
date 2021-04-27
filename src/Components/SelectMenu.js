@@ -29,9 +29,9 @@ export default function SelectMenu({
                     transformOrigin: { vertical: "top", horizontal: "left" },
                 }}
             >
-                {items.map((item) => {
+                {items.map((item, index) => {
                     return (
-                        <MenuItem key={item.label} value={item.value} disabled={item.disabled} >
+                        <MenuItem key={index} value={item.value} disabled={item.disabled} >
                             {item.label}
                         </MenuItem>
                     );
