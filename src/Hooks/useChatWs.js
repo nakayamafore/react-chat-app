@@ -5,7 +5,7 @@ import Stomp from 'stomp-websocket'
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const chatWsUrl = `${API_ENDPOINT}/chat-ws`
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
-const useChatWs = (roomId, setMessages) => {
+const useChatWs = (roomId, setMessages, handlePushNotif = e => e) => {
 
     const [isChatSubscribe, setIsChatSubscribe] = useState(false);
     const [roomUserId, setRoomUserId] = useState(0);
@@ -45,9 +45,8 @@ const useChatWs = (roomId, setMessages) => {
                 }
                 console.log("==chat Subscribe Recieved setMessages");
                 setMessages(prevMessages => [...prevMessages, json]);
-                var element = document.documentElement;
-                var bottom = element.scrollHeight - element.clientHeight;
-                window.scroll(0, bottom);
+                scrollBottom()
+                handlePushNotif(json.content)
             }, chatHeaders)
         });
         return () => {
@@ -55,6 +54,12 @@ const useChatWs = (roomId, setMessages) => {
             chatClient.disconnect();
         };
     }, [roomUserId]);
+
+    const scrollBottom = () => {
+        var element = document.documentElement;
+        var bottom = element.scrollHeight - element.clientHeight;
+        window.scroll(0, bottom);
+    }
 
     return { roomUserId, setRoomUserId, chatClient }
 }

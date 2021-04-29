@@ -50,7 +50,7 @@ body {
   margin: 0;
   padding: 0;
   list-style: none;
-  padding-bottom: 120px;
+  padding-bottom: 80px;
 }
 
 .messages li {
@@ -81,8 +81,21 @@ li.right-side {
   border-radius: 8px;
   padding: 16px;
   max-width: 60%;
+  text-align: left;
   line-height: 1.8;
+  white-space: pre-line;
   position: relative; /* 相対位置 */
+}
+.txt > p {
+  margin: 0px;
+}
+.txt > pre {
+  /* margin: 0px; */
+  margin: 1em 1em 1em 1.6em;
+  padding: 8px;
+  background-color: #fafafa;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
 }
 .time {
   position: relative; /* 相対位置 */
@@ -125,7 +138,8 @@ li.right-side {
 .input-text {
   border-radius: 4px;
   padding: 8px;
-  width: 80%;
+  margin: auto;
+  width: 100%;
 }
 .send-button {
   padding: 6px;

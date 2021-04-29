@@ -28,8 +28,6 @@ const useLoadRooms = () => {
             .catch()
     }, [userId])
 
-    console.log("userId: " + userId)
-
     return { userId, rooms }
 }
 export default useLoadRooms

@@ -2,12 +2,14 @@ import { useState, useEffect } from "react"
 import useLoadRooms from '../Hooks/useLoadRooms'
 import useLoadChat from '../Hooks/useLoadChat'
 import useChatWs from '../Hooks/useChatWs'
+import usePushNotice from '../Hooks/usePushNotice'
 
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
 const useChat = () => {
     const { userId, rooms } = useLoadRooms()
     const { roomId, setRoomId, messages, setMessages } = useLoadChat()
-    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, setMessages)
+    const { handleSoundChange, handlePushNotif, hasSound } = usePushNotice()
+    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, setMessages, handlePushNotif)
     const [content, setContent] = useState('');
     const [selectRooms, setSelectRooms] = useState([{}]);
 
@@ -39,7 +41,7 @@ const useChat = () => {
         setRoomUserId(rooms[0].roomUserId)
     }, [rooms, roomId, setRoomId, setRoomUserId])
 
-    const handleButtonClick = (e) => {
+    const handleButtonClick = async (e) => {
         const aMessage = {
             roomUserId,
             content,
@@ -51,17 +53,17 @@ const useChat = () => {
             "x-jwt-token": token,
         };
 
-        chatClient.send("/app/chat", chatHeaders, JSON.stringify(aMessage));
+        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(aMessage));
         setContent('');
     }
 
     const handleInputChange = (e) => {
-        console.log(e.target.value)
         setContent(e.target.value);
     };
 
     const handleInputEnter = (e) => {
-        if (e.keyCode === 13) {
+        // console.log("e.keyCode :" + e.keyCode + ", e.shiftKey :" + e.shiftKey)
+        if (e.shiftKey === false && e.keyCode === 13) {
             console.log("handleInputEnter=enter")
             handleButtonClick()
         }
@@ -73,9 +75,12 @@ const useChat = () => {
         setRoomId(targetRoom.roomId)
         setRoomUserId(targetRoom.roomUserId)
     }
+
+
+
     return {
-        handleRoomChange, handleInputEnter, handleInputChange, handleButtonClick,
-        messages, selectRooms, userId, content
+        handleRoomChange, handleInputEnter, handleInputChange, handleButtonClick, handleSoundChange,
+        messages, selectRooms, userId, content, hasSound
     }
 }
 export default useChat
