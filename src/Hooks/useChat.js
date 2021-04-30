@@ -80,7 +80,7 @@ const useChat = () => {
 
     return {
         handleRoomChange, handleInputEnter, handleInputChange, handleButtonClick, handleSoundChange,
-        messages, selectRooms, userId, content, hasSound
+        messages, selectRooms, userId, content, setContent, hasSound
     }
 }
 export default useChat

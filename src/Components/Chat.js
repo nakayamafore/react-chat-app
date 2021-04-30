@@ -9,7 +9,7 @@ import gfm from 'remark-gfm'
 export default function Chat() {
     const {
         handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange,
-        messages, selectRooms, userId, content, hasSound
+        messages, selectRooms, userId, content, setContent, hasSound
     } = useChat()
     return (
         <>
@@ -44,7 +44,7 @@ export default function Chat() {
                 <div className="input-fooder">
                     <Navivation onSelectChange={handleRoomChange} selectList={selectRooms}
                         onSoundChange={handleSoundChange} hasSound={hasSound}
-                        inputContent={content} inputOnChange={handleInputChange} inputOnKeyDown={handleInputEnter}
+                        inputContent={content} setInputContent={setContent} inputOnChange={handleInputChange} inputOnKeyDown={handleInputEnter}
                     />
                 </div>
             </div>
