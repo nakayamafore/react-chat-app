@@ -121,7 +121,7 @@ const useChat = () => {
         });
         console.log(messages)
     }
-    const handleChatEdited = async (e, chatId, roomUserId) => {
+    const handleChatEdited = async (e, chatId) => {
         console.log("handleChatEdited :" + chatId)
         let target = messages.find(m => m.chatId === chatId)
         const request = {
@@ -143,12 +143,30 @@ const useChat = () => {
             return [...prevMessages]
         });
     }
-    const displayChatEdit = { display: true ? 'none' : '' }
+    const handleChatDeleted = async (e, chatId) => {
+        console.log("handleChatDeleted :" + chatId)
+        const request = {
+            functionType: "D",
+            roomUserId,
+            chatId: chatId
+        };
+        const token = loadJson(`token`)
+        var chatHeaders = {
+            "x-jwt-token": token,
+        };
+
+        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+
+        setMessages(prevMessages => {
+            let replaceMessage = prevMessages.filter(e => e.chatId !== chatId)
+            return [...replaceMessage]
+        });
+    }
 
     return {
         handleRoomChange, handleInputEnter, handleInputChange,
         handleInsertClick, handleReactionUpdateClick, handleSoundChange,
-        handleChatEdit, editChatOnChange, handleChatEdited, displayChatEdit,
+        handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted,
         messages, selectRooms, userId, content, setContent, hasSound, roomUserId
     }
 }

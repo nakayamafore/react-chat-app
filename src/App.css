@@ -87,7 +87,7 @@ li.right-side {
   max-width: 60%;
   text-align: left;
   line-height: 1.8;
-  white-space: pre-line;
+  white-space: normal;
   overflow:scroll;
   position: relative; /* 相対位置 */
 }
@@ -98,11 +98,22 @@ li.right-side {
   /* margin: 0px; */
   margin: 1em 1em 1em 1.6em;
   padding: 8px;
+  white-space: pre-line;
   background-color: #fafafa;
   border: 1px solid #e2e2e2;
   border-radius: 3px;
   overflow:scroll;
 }
+.txt > ul {
+  padding-left: 22px;
+  list-style: disc;
+}
+.txt > ul > li {
+  margin-top: 2px;
+  list-style: inherit;
+  text-align: left;
+}
+
 .time {
   position: relative; /* 相対位置 */
   color: #a4abb3;
