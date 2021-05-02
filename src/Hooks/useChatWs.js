@@ -44,9 +44,25 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e) => {
                     return
                 }
                 console.log("==chat Subscribe Recieved setMessages");
-                setMessages(prevMessages => [...prevMessages, json]);
-                scrollBottom()
-                handlePushNotif(json.content)
+                if (json.functionType === "I") {
+                    setMessages(prevMessages => [...prevMessages, json]);
+                    scrollBottom()
+                    handlePushNotif(json.content)
+                } else if (json.functionType === "U") {
+                    setMessages(prevMessages => {
+                        console.log(json.reactions)
+                        // let targetIndex = prevMessages.findIndex(m => m.chatId === json.chatId)
+                        // console.log(targetIndex)
+                        // console.log(prevMessages[targetIndex])
+                        // prevMessages.splice(targetIndex, 1, json);
+                        // console.log(prevMessages)
+                        // console.log(json.chatId)
+                        let target = prevMessages.find(m => m.chatId === json.chatId)
+                        target.reactions = json.reactions
+                        console.log(prevMessages)
+                        return [...prevMessages]
+                    });
+                }
             }, chatHeaders)
         });
         return () => {

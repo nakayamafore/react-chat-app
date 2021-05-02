@@ -5,12 +5,14 @@ import useChat from '../Hooks/useChat'
 import dayjs from 'dayjs'
 import * as ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
+import Button from '@material-ui/core/Button'
 
 export default function Chat() {
     const {
-        handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange,
-        messages, selectRooms, userId, content, setContent, hasSound
+        handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, displayChatEdit,
+        messages, selectRooms, userId, content, setContent, hasSound, roomUserId
     } = useChat()
+
     return (
         <>
             <div>
@@ -31,11 +33,29 @@ export default function Chat() {
                             return (
                                 <li className={className} key={idx}>
                                     <div className="pic">
-                                        <img src={imageUrl} alt={data.name} />
+                                        <img src={imageUrl} alt={data} />
                                         <div className="time">{time}</div>
                                     </div>
-                                    <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content}></ReactMarkdown>
-                                    {/* <div className="txt">{data.content}</div> */}
+                                    <div className="content">
+                                        <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content}></ReactMarkdown>
+                                        <textarea className="txt" type="text" value={data.content}
+                                            onChange={(e) => editChatOnChange(e, data.chatId, idx)}
+                                            style={{ display: data.editMode ? '' : 'none' }} />
+                                        <Button variant="contained" color="primary"
+                                            onClick={(e) => handleChatEdited(e, data.chatId, roomUserId)}
+                                            style={{ display: data.editMode ? '' : 'none' }}>決定</Button>
+                                    </div>
+                                    <div className="pic">
+                                        <Button variant="contained" color="primary" onClick={(e) => handleChatEdit(e, data.chatId)}>
+                                            📝
+                                        </Button>
+                                        <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "nice", data.reactions)}>
+                                            👍 :{data.reactions?.reduce((p, x) => p + x.nice, 0)}
+                                        </Button>
+                                        <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "look", data.reactions)}>
+                                            👀 :{data.reactions?.reduce((p, x) => p + x.look, 0)}
+                                        </Button>
+                                    </div>
                                 </li>
                             );
                         })

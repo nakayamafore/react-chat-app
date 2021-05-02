@@ -76,6 +76,10 @@ li.right-side {
   border-radius: 50%;
 }
 
+.content {
+  text-align: left;
+}
+
 .txt {
   background: #fff;
   border-radius: 8px;
@@ -84,6 +88,7 @@ li.right-side {
   text-align: left;
   line-height: 1.8;
   white-space: pre-line;
+  overflow:scroll;
   position: relative; /* 相対位置 */
 }
 .txt > p {
@@ -96,6 +101,7 @@ li.right-side {
   background-color: #fafafa;
   border: 1px solid #e2e2e2;
   border-radius: 3px;
+  overflow:scroll;
 }
 .time {
   position: relative; /* 相対位置 */

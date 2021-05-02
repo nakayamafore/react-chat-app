@@ -41,8 +41,9 @@ const useChat = () => {
         setRoomUserId(rooms[0].roomUserId)
     }, [rooms, roomId, setRoomId, setRoomUserId])
 
-    const handleButtonClick = async (e) => {
+    const handleInsertClick = async (e) => {
         const aMessage = {
+            functionType: "I",
             roomUserId,
             content,
         };
@@ -57,15 +58,42 @@ const useChat = () => {
         setContent('');
     }
 
+    const handleReactionUpdateClick = async (e, chatId, roomUserId, actionName, prevReactions = []) => {
+        console.log("handleUpdateClick")
+        console.log(e)
+        console.log(chatId)
+        let target = prevReactions.find(m => m.roomUserId === roomUserId)
+        let reactions
+        if (target) {
+            console.log("target && target[actionName]")
+            target[actionName] ? target[actionName] = 0 : target[actionName] = 1
+            reactions = [...prevReactions]
+        } else {
+            reactions = [...prevReactions, { roomUserId, [actionName]: 1 }]
+        }
+        const request = {
+            functionType: "U",
+            roomUserId,
+            chatId,
+            reactions
+        };
+        const token = loadJson(`token`)
+        var chatHeaders = {
+            "x-jwt-token": token,
+        };
+
+        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+        setContent('');
+    }
+
     const handleInputChange = (e) => {
         setContent(e.target.value);
     };
 
     const handleInputEnter = (e) => {
-        // console.log("e.keyCode :" + e.keyCode + ", e.shiftKey :" + e.shiftKey)
         if (e.shiftKey === false && e.keyCode === 13) {
             console.log("handleInputEnter=enter")
-            handleButtonClick()
+            handleInsertClick()
         }
     }
     const handleRoomChange = (roomId) => {
@@ -76,11 +104,52 @@ const useChat = () => {
         setRoomUserId(targetRoom.roomUserId)
     }
 
+    const handleChatEdit = (e, chatId) => {
+        console.log("handleChatEdit :" + chatId)
+        setMessages(prevMessages => {
+            let targetMessage = prevMessages.find(e => e.chatId === chatId)
+            targetMessage.editMode = true
+            return [...prevMessages]
+        });
+    }
+    const editChatOnChange = (e, chatId, idx) => {
+        console.log("editChatOnChange :" + chatId + ", e.target.value :" + e.target.value + ", idx :" + idx)
+        setMessages(prevMessages => {
+            let targetMessage = prevMessages.find(e => e.chatId === chatId)
+            targetMessage.content = e.target.value
+            return [...prevMessages]
+        });
+        console.log(messages)
+    }
+    const handleChatEdited = async (e, chatId, roomUserId) => {
+        console.log("handleChatEdited :" + chatId)
+        let target = messages.find(m => m.chatId === chatId)
+        const request = {
+            functionType: "U",
+            roomUserId,
+            chatId: target.chatId,
+            content: target.content,
+        };
+        const token = loadJson(`token`)
+        var chatHeaders = {
+            "x-jwt-token": token,
+        };
 
+        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+
+        setMessages(prevMessages => {
+            let targetMessage = prevMessages.find(e => e.chatId === chatId)
+            targetMessage.editMode = false
+            return [...prevMessages]
+        });
+    }
+    const displayChatEdit = { display: true ? 'none' : '' }
 
     return {
-        handleRoomChange, handleInputEnter, handleInputChange, handleButtonClick, handleSoundChange,
-        messages, selectRooms, userId, content, setContent, hasSound
+        handleRoomChange, handleInputEnter, handleInputChange,
+        handleInsertClick, handleReactionUpdateClick, handleSoundChange,
+        handleChatEdit, editChatOnChange, handleChatEdited, displayChatEdit,
+        messages, selectRooms, userId, content, setContent, hasSound, roomUserId
     }
 }
 export default useChat
