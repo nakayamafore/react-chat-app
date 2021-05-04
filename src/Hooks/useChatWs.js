@@ -53,7 +53,7 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e) => {
                         console.log(json.reactions)
                         let target = prevMessages.find(m => m.chatId === json.chatId)
                         target.reactions = json.reactions
-                        target.content = json.content
+                        target.content = json.content ? json.content : target.content
                         console.log(prevMessages)
                         return [...prevMessages]
                     });

@@ -3,6 +3,7 @@ import useLoadRooms from '../Hooks/useLoadRooms'
 import useLoadChat from '../Hooks/useLoadChat'
 import useChatWs from '../Hooks/useChatWs'
 import usePushNotice from '../Hooks/usePushNotice'
+import useUpload from '../Hooks/useUpload'
 
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
 const useChat = () => {
@@ -10,8 +11,9 @@ const useChat = () => {
     const { roomId, setRoomId, messages, setMessages } = useLoadChat()
     const { handleSoundChange, handlePushNotif, hasSound } = usePushNotice()
     const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, setMessages, handlePushNotif)
-    const [content, setContent] = useState('');
-    const [selectRooms, setSelectRooms] = useState([{}]);
+    const [content, setContent] = useState('')
+    const { uploadFile, setUploadfile, getRootProps, onPasteImageUpload } = useUpload(setContent)
+    const [selectRooms, setSelectRooms] = useState([{}])
 
     useEffect(() => {
         console.log('create selectRooms..');
@@ -83,7 +85,8 @@ const useChat = () => {
         };
 
         await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
-        setContent('');
+        setContent('')
+        setUploadfile([])
     }
 
     const handleInputChange = (e) => {
@@ -91,9 +94,18 @@ const useChat = () => {
     };
 
     const handleInputEnter = (e) => {
+        // console.log("[e.shiftKey, e.ctrlKey, e.metaKey, e.keyCode] :[" + e.shiftKey + ", " + e.ctrlKey + ", " + e.metaKey + ", " + e.keyCode + "]")
+        // enter処理
         if (e.shiftKey === false && e.keyCode === 13) {
             console.log("handleInputEnter=enter")
+            e.stopPropagation()
             handleInsertClick()
+        }
+        // ペースト処理
+        if (((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)) && e.keyCode === 86) {
+            console.log("handleInputEnter=ctrl+v")
+            e.stopPropagation()
+            onPasteImageUpload(e)
         }
     }
     const handleRoomChange = (roomId) => {
@@ -166,7 +178,7 @@ const useChat = () => {
     return {
         handleRoomChange, handleInputEnter, handleInputChange,
         handleInsertClick, handleReactionUpdateClick, handleSoundChange,
-        handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted,
+        handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, getRootProps, uploadFile,
         messages, selectRooms, userId, content, setContent, hasSound, roomUserId
     }
 }

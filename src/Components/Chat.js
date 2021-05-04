@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button'
 
 export default function Chat() {
     const {
-        handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted,
+        handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, getRootProps, uploadFile,
         messages, selectRooms, userId, content, setContent, hasSound, roomUserId
     } = useChat()
 
@@ -41,6 +41,12 @@ export default function Chat() {
                                         <Button variant="contained" color="primary" onClick={(e) => handleChatDeleted(e, data.chatId)}>
                                             ❌
                                         </Button>
+                                        {/* <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "nice", data.reactions)}>
+                                            👍  {data.reactions?.reduce((p, x) => p + x.nice, 0)}
+                                        </Button>
+                                        <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "look", data.reactions)}>
+                                            👀  {data.reactions?.reduce((p, x) => p + x.look, 0)}
+                                        </Button> */}
                                     </div>
                                     <div className="content">
                                         <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content}></ReactMarkdown>
@@ -51,14 +57,6 @@ export default function Chat() {
                                             onClick={(e) => handleChatEdited(e, data.chatId, roomUserId)}
                                             style={{ display: data.editMode ? '' : 'none' }}>決定</Button>
                                     </div>
-                                    <div className="pic">
-                                        <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "nice", data.reactions)}>
-                                            👍 :{data.reactions?.reduce((p, x) => p + x.nice, 0)}
-                                        </Button>
-                                        <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "look", data.reactions)}>
-                                            👀 :{data.reactions?.reduce((p, x) => p + x.look, 0)}
-                                        </Button>
-                                    </div>
                                 </li>
                             );
                         })
@@ -68,6 +66,7 @@ export default function Chat() {
                     <Navivation onSelectChange={handleRoomChange} selectList={selectRooms}
                         onSoundChange={handleSoundChange} hasSound={hasSound}
                         inputContent={content} setInputContent={setContent} inputOnChange={handleInputChange} inputOnKeyDown={handleInputEnter}
+                        uploadAreaProp={getRootProps} uploadFile={uploadFile}
                     />
                 </div>
             </div>

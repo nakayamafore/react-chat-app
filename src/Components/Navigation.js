@@ -9,6 +9,7 @@ import Modal from '@material-ui/core/Modal';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 
+
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         backgroundColor: '#e6e6fa',
@@ -22,13 +23,7 @@ const useStyles = makeStyles((theme) => createStyles({
         padding: theme.spacing(2, 4, 3),
     },
 }));
-function rand() {
-    return Math.round(Math.random() * 20) - 10;
-}
 function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
-
     return {
         top: `50%`,
         left: `50%`,
@@ -38,11 +33,12 @@ function getModalStyle() {
 
 export default function Navigation({
     onSelectChange = e => e, selectList = {}, onSoundChange = e => e, hasSound = false,
-    inputContent = "", setInputContent = e => e, inputOnChange = e => e, inputOnKeyDown = e => e
+    inputContent = "", setInputContent = e => e, inputOnChange = e => e, inputOnKeyDown = e => e,
+    uploadAreaProp = e => e, uploadFile = []
 }) {
-    const classes = useStyles();
-    const [modalStyle] = useState(getModalStyle);
-    const [open, setOpen] = useState(false);
+    const classes = useStyles()
+    const [modalStyle] = useState(getModalStyle)
+    const [open, setOpen] = useState(false)
 
     const handleOpen = () => {
         setOpen(true);
@@ -74,8 +70,12 @@ export default function Navigation({
                 }} />
             </Modal>
             <BottomNavigationAction icon={<SelectMenu onChange={onSelectChange} items={selectList} />} />
-            <BottomNavigationAction icon={<textarea className="input-text" type="text" placeholder="メッセージ"
-                value={inputContent} onChange={inputOnChange} onKeyDown={inputOnKeyDown} />} />
+            <BottomNavigationAction icon={<div className="container">
+                <div {...uploadAreaProp({ className: 'dropzone' })}>
+                    <textarea className="input-text" type="text" placeholder="メッセージ"
+                        value={inputContent} onChange={inputOnChange} onKeyDown={inputOnKeyDown} />
+                </div>
+            </div>} />
             <BottomNavigationAction icon={<EmojiEmotionsIcon onClick={handleOpen} />} />
             <BottomNavigationAction icon={
                 hasSound

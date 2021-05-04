@@ -84,9 +84,10 @@ li.right-side {
   background: #fff;
   border-radius: 8px;
   padding: 16px;
-  max-width: 60%;
+  max-width: 85%;
   text-align: left;
   line-height: 1.8;
+  font-size: 0.8em;
   white-space: normal;
   overflow:scroll;
   position: relative; /* 相対位置 */
@@ -112,6 +113,18 @@ li.right-side {
   margin-top: 2px;
   list-style: inherit;
   text-align: left;
+}
+.txt > blockquote {
+  margin: 1em 1em 1em 1.6em;
+  padding: 8px;
+  white-space: pre-line;
+  background-color: #fafafa;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  overflow:scroll;
+}
+.txt > blockquote > p {
+  margin: 0px;
 }
 
 .time {
