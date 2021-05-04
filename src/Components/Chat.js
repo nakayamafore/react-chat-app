@@ -4,6 +4,7 @@ import Navivation from '../Components/Navigation'
 import useChat from '../Hooks/useChat'
 import dayjs from 'dayjs'
 import * as ReactMarkdown from 'react-markdown'
+import CodeBlock from '../Components/CodeBlock'
 import gfm from 'remark-gfm'
 import Button from '@material-ui/core/Button'
 
@@ -49,7 +50,7 @@ export default function Chat() {
                                         </Button> */}
                                     </div>
                                     <div className="content">
-                                        <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content}></ReactMarkdown>
+                                        <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content} components={CodeBlock} />
                                         <textarea className="txt" type="text" value={data.content}
                                             onChange={(e) => editChatOnChange(e, data.chatId, idx)}
                                             style={{ display: data.editMode ? '' : 'none' }} />
