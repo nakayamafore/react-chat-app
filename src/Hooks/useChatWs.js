@@ -5,7 +5,7 @@ import Stomp from 'stomp-websocket'
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const chatWsUrl = `${API_ENDPOINT}/chat-ws`
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
-const useChatWs = (roomId, setMessages, handlePushNotif = e => e) => {
+const useChatWs = (roomId, setMessages, handlePushNotif = e => e, subscribeFiler = e => e) => {
 
     const [isChatSubscribe, setIsChatSubscribe] = useState(false);
     const [roomUserId, setRoomUserId] = useState(0);
@@ -19,10 +19,10 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e) => {
             console.log('cancel Connectinng by isChatSubscribe..');
             return
         }
-        if (!roomUserId || roomUserId === 0) {
-            console.log('cancel Connectinng..');
-            return
-        }
+        // if (!roomUserId || roomUserId === 0) {
+        //     console.log('cancel Connectinng..');
+        //     return
+        // }
         const token = loadJson(`token`)
         var headers = {
             "x-jwt-token": token
@@ -39,7 +39,7 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e) => {
                 console.log('==chat Subscribe Recieved: ' + payload.body);
                 const json = JSON.parse(payload.body)
                 console.log(json);
-                if (json.roomId !== roomId) {
+                if (!subscribeFiler(json.roomId)) {
                     console.log("==cancel Subscribe Recieved: json.roomId: " + json.roomId + ", roomId: " + roomId);
                     return
                 }
@@ -70,7 +70,7 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e) => {
             console.log('[[chat Disconnecting..]]');
             chatClient.disconnect();
         };
-    }, [roomUserId]);
+    }, []);
 
     const scrollBottom = () => {
         var element = document.documentElement;

@@ -10,7 +10,8 @@ const useChat = () => {
     const { userId, rooms } = useLoadRooms()
     const { roomId, setRoomId, messages, setMessages } = useLoadChat()
     const { handleSoundChange, handlePushNotif, hasSound } = usePushNotice()
-    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, setMessages, handlePushNotif)
+    const subscribeFiler = e => roomId === e
+    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, setMessages, handlePushNotif, subscribeFiler)
     const [content, setContent] = useState('')
     const { uploadFile, setUploadfile, getRootProps, onPasteImageUpload } = useUpload(setContent)
     const [selectRooms, setSelectRooms] = useState([{}])
@@ -36,7 +37,7 @@ const useChat = () => {
             return
         }
         if (roomId !== 0) {
-            console.log("cancel room auto select by roomId not Zero")
+            console.log("cancel room auto select by roomId not Zero roomId :" + roomId)
             return
         }
         setRoomId(rooms[0].roomId)
@@ -55,7 +56,7 @@ const useChat = () => {
         var chatHeaders = {
             "x-jwt-token": token,
         };
-
+        console.log("chatClient.readyState :" + chatClient.readyState)
         await chatClient.send("/app/chat", chatHeaders, JSON.stringify(aMessage));
         setContent('');
     }
