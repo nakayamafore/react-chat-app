@@ -26,7 +26,7 @@ const useChat = () => {
             console.log(room)
             return { 'label': room.roomName, 'value': room.roomId, 'disabled': false }
         })
-        selectItems.unshift({ 'label': 'room change', 'value': 0, 'disabled': true })
+        // selectItems.unshift({ 'label': 'room change', 'value': 0, 'disabled': true })
         setSelectRooms(selectItems)
     }, [rooms])
 

@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import { BottomNavigation, BottomNavigationAction } from "@material-ui/core"
-import SelectMenu from '../Components/SelectMenu'
+import TextareaAutosize from 'react-textarea-autosize';
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
@@ -12,7 +11,7 @@ import 'emoji-mart/css/emoji-mart.css';
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        backgroundColor: '#e6e6fa',
+        backgroundColor: '#fafafa',
     },
     paper: {
         position: 'absolute',
@@ -49,13 +48,7 @@ export default function Navigation({
     };
 
     return (
-        <BottomNavigation className={classes.root}
-            onChange={(event, newValue) => {
-                // setValue(newValue);
-                console.log(newValue)
-            }}
-            showLabels
-        >
+        <div className="input-fooder">
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -69,17 +62,15 @@ export default function Navigation({
                     setInputContent(inputContent + emoji.native)
                 }} />
             </Modal>
-            <BottomNavigationAction icon={<SelectMenu onChange={onSelectChange} items={selectList} />} />
-            <BottomNavigationAction icon={<div className="container">
+            <div className="input-container">
                 <div {...uploadAreaProp({ className: 'dropzone' })}>
-                    <textarea className="input-text" type="text" placeholder="メッセージ"
+                    <TextareaAutosize className="input-text" type="text" placeholder="メッセージ"
                         value={inputContent} onChange={inputOnChange} onKeyDown={inputOnKeyDown} />
                 </div>
-            </div>} />
-            <BottomNavigationAction icon={<EmojiEmotionsIcon onClick={handleOpen} />} />
-            <BottomNavigationAction icon={
-                hasSound
-                    ? <VolumeUpIcon onClick={onSoundChange} />
-                    : <VolumeOffIcon onClick={onSoundChange} />} />
-        </BottomNavigation>)
+            </div>
+            <div className="icon-select-button"><EmojiEmotionsIcon onClick={handleOpen} /></div>
+            <div className="volume-togle-button">{hasSound
+                ? <VolumeUpIcon onClick={onSoundChange} />
+                : <VolumeOffIcon onClick={onSoundChange} />}</div>
+        </div>)
 }

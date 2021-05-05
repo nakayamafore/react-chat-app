@@ -19,10 +19,10 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e, subscribeFiler
             console.log('cancel Connectinng by isChatSubscribe..');
             return
         }
-        // if (!roomUserId || roomUserId === 0) {
-        //     console.log('cancel Connectinng..');
-        //     return
-        // }
+        if (!roomUserId || roomUserId === 0) {
+            console.log('cancel Connectinng..');
+            return
+        }
         const token = loadJson(`token`)
         var headers = {
             "x-jwt-token": token
@@ -70,7 +70,7 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e, subscribeFiler
             console.log('[[chat Disconnecting..]]');
             chatClient.disconnect();
         };
-    }, []);
+    }, [roomUserId]);
 
     const scrollBottom = () => {
         var element = document.documentElement;

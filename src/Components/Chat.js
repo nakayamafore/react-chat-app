@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 import * as ReactMarkdown from 'react-markdown'
 import CodeBlock from '../Components/CodeBlock'
 import gfm from 'remark-gfm'
-import Button from '@material-ui/core/Button'
+import TextareaAutosize from 'react-textarea-autosize';
 
 export default function Chat() {
     const {
@@ -15,8 +15,13 @@ export default function Chat() {
     } = useChat()
 
     return (
-        <>
-            <div>
+        <div class="wrapper">
+            <div className="room-bar">
+                {selectRooms && selectRooms.map((data, idx) => {
+                    return (<div key={idx} onClick={(e) => handleRoomChange(data.value)}>{data.label}</div>)
+                })}
+            </div>
+            <div className="chat-content">
                 {messages && <ul className="messages" id="message">
                     {
                         messages.map((data, idx) => {
@@ -31,32 +36,34 @@ export default function Chat() {
                                 ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
                                 : "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png"
                             const time = dayjs(data.createdDatetime).format("HH:mm");
+                            const isMime = (data.userId === userId)
                             return (
                                 <li className={className} key={idx}>
                                     <div className="pic">
                                         <img src={imageUrl} alt={data} />
-                                        <div className="time">{time}</div>
-                                        <Button variant="contained" color="primary" onClick={(e) => handleChatEdit(e, data.chatId)}>
-                                            📝
-                                        </Button>
-                                        <Button variant="contained" color="primary" onClick={(e) => handleChatDeleted(e, data.chatId)}>
-                                            ❌
-                                        </Button>
-                                        {/* <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "nice", data.reactions)}>
-                                            👍  {data.reactions?.reduce((p, x) => p + x.nice, 0)}
-                                        </Button>
-                                        <Button variant="contained" color="primary" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "look", data.reactions)}>
-                                            👀  {data.reactions?.reduce((p, x) => p + x.look, 0)}
-                                        </Button> */}
                                     </div>
                                     <div className="content">
-                                        <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content} components={CodeBlock} />
-                                        <textarea className="txt" type="text" value={data.content}
+                                        <div className="edit_bar">
+                                            <span className="time">{time}</span>
+                                            <button className="edit-button" onClick={(e) => handleChatEdit(e, data.chatId)}
+                                                style={{ display: data.editMode || !isMime ? 'none' : '' }}>📝 :編集</button>
+                                            <button className="edit-button" onClick={(e) => handleChatDeleted(e, data.chatId)}
+                                                style={{ display: data.editMode || !isMime ? 'none' : '' }}>❌ :削除</button>
+                                            <button className="edit-button" onClick={(e) => handleChatEdited(e, data.chatId, roomUserId)}
+                                                style={{ display: data.editMode && isMime ? '' : 'none' }}>決定</button>
+                                        </div>
+                                        <TextareaAutosize className="edit-txt" type="text" value={data.content}
                                             onChange={(e) => editChatOnChange(e, data.chatId, idx)}
                                             style={{ display: data.editMode ? '' : 'none' }} />
-                                        <Button variant="contained" color="primary"
-                                            onClick={(e) => handleChatEdited(e, data.chatId, roomUserId)}
-                                            style={{ display: data.editMode ? '' : 'none' }}>決定</Button>
+                                        <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content} components={CodeBlock} />
+                                        <div className="reaction_bar">
+                                            <button className="c-reaction" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "nice", data.reactions)}>
+                                                👍  {data.reactions?.reduce((p, x) => p + x.nice, 0)}
+                                            </button>
+                                            <button className="c-reaction" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "look", data.reactions)}>
+                                                👀  {data.reactions?.reduce((p, x) => p + x.look, 0)}
+                                            </button>
+                                        </div>
                                     </div>
                                 </li>
                             );
@@ -71,6 +78,6 @@ export default function Chat() {
                     />
                 </div>
             </div>
-        </>
+        </div>
     );
 }

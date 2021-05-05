@@ -42,8 +42,35 @@ body {
   background: skyblue;
 }
 
-.container {
-  padding: 32px;
+.room-bar {
+  background: #fafafa;
+  position: fixed;
+  overflow-y: scroll;
+  height: 100%;
+}
+.room-bar > div {
+  padding-left: 16px;
+  padding-right: 16px;
+  width: auto;
+  overflow: hidden;
+  font-size: 1rem;
+  box-sizing: border-box;
+  min-height: 48px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  padding-top: 6px;
+  margin: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.00938em;
+  padding-bottom: 6px;
+  border-radius: 4px;
+  background-color: black;
+  background: #fafafa;
+}
+.chat-content {
+  overflow-y: scroll;
+  margin-left: 100px;
 }
 
 .messages {
@@ -80,6 +107,21 @@ li.right-side {
   text-align: left;
 }
 
+.edit-txt {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 60%;
+  max-width: 85%;
+  max-height: 300px;
+  text-align: left;
+  line-height: 1.8;
+  font-size: 0.8em;
+  white-space: normal;
+  overflow:scroll;
+  position: relative; /* 相対位置 */
+}
+
 .txt {
   background: #fff;
   border-radius: 8px;
@@ -114,6 +156,17 @@ li.right-side {
   list-style: inherit;
   text-align: left;
 }
+.txt > ol {
+  padding-left: 22px;
+  list-style: decimal;
+  list-style-type: decimal;
+}
+.txt > ol > li {
+  margin-top: 2px;
+  list-style: decimal;
+  list-style-type: decimal;
+  text-align: left;
+}
 .txt > blockquote {
   margin: 1em 1em 1em 1.6em;
   padding: 8px;
@@ -126,11 +179,17 @@ li.right-side {
 .txt > blockquote > p {
   margin: 0px;
 }
+.txt > p > img {
+  width: 100%; /* or any custom size */
+  height: 100%; 
+  object-fit: contain;
+}
 
 .time {
   position: relative; /* 相対位置 */
   color: #a4abb3;
   font-size: calc(3px + 2vmin);
+  margin: 5px;
 }
 
 .txt::before {
@@ -161,16 +220,65 @@ li.right-side {
   /* left: 20%; */
   border-radius: 4px;
   padding: 5px;
-  max-width: 100%;
+  min-width: 100%;
+  max-height: 300px;
+  /* height: 70px; */
   width: 100%;
   background: #e6e6fa;
+  display: flex;
+  vertical-align:center;
+}
+.input-container {
+  padding: 4px;
+  
 }
 .input-text {
   border-radius: 4px;
-  padding: 8px;
+  min-width: 500px;
+  height: 100%;
   margin: auto;
-  width: 100%;
+}
+.icon-select-button {
+  text-align: center;
+  vertical-align: middle;
+}
+.volume-togle-button {
+  text-align: center;
+  vertical-align: middle;
 }
 .send-button {
   padding: 6px;
+}
+.edit-button {
+  font-size: 11px;
+  line-height: 16px;
+  padding: 4px 6px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: top;
+  background: #e6e6fa;
+  border: none;
+  border-radius: 12px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.c-reaction {
+  font-size: 11px;
+  line-height: 16px;
+  padding: 4px 6px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: top;
+  background: rgba(var(--sk_foreground_min,29,28,29),.04);
+  border: none;
+  border-radius: 12px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.wrapper{
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
 }

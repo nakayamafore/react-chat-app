@@ -6,7 +6,7 @@ const CodeBlock = {
     code({ node, className, children, ...props }) {
         const match = /language-(\w+)/.exec(className || '')
         return match
-            ? <SyntaxHighlighter language={match[1]} PreTag="div" style={tomorrow} >{children[0].replace(/\n$/i, "")}</SyntaxHighlighter>
+            ? <SyntaxHighlighter language={match[1].toLowerCase()} PreTag="div" style={tomorrow} >{children[0].replace(/\n$/i, "")}</SyntaxHighlighter>
             : <code className={className} children={children} {...props} />
     }
 }
