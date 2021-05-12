@@ -184,14 +184,18 @@ li.right-side {
   height: 100%; 
   object-fit: contain;
 }
-
+.name {
+  position: relative; /* 相対位置 */
+  color: #5d6268;
+  font-size: calc(3px + 2vmin);
+  margin: 5px;
+}
 .time {
   position: relative; /* 相対位置 */
   color: #a4abb3;
   font-size: calc(3px + 2vmin);
   margin: 5px;
 }
-
 .txt::before {
   content: '';
   width: 0;

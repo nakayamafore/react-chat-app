@@ -11,11 +11,11 @@ import TextareaAutosize from 'react-textarea-autosize';
 export default function Chat() {
     const {
         handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, getRootProps, uploadFile,
-        messages, selectRooms, userId, content, setContent, hasSound, roomUserId
+        messages, selectRooms, roommates, userId, content, setContent, hasSound, roomUserId
     } = useChat()
 
     return (
-        <div class="wrapper">
+        <div className="wrapper">
             <div className="room-bar">
                 {selectRooms && selectRooms.map((data, idx) => {
                     return (<div key={idx} onClick={(e) => handleRoomChange(data.value)}>{data.label}</div>)
@@ -35,8 +35,9 @@ export default function Chat() {
                             const imageUrl = (data.userId === userId)
                                 ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
                                 : "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png"
-                            const time = dayjs(data.createdDatetime).format("HH:mm");
+                            const time = dayjs(data.createdDatetime).format("M[/]D HH:mm");
                             const isMime = (data.userId === userId)
+                            const userName = roommates.find(e => e.userId === data.userId)?.userName;
                             return (
                                 <li className={className} key={idx}>
                                     <div className="pic">
@@ -44,6 +45,7 @@ export default function Chat() {
                                     </div>
                                     <div className="content">
                                         <div className="edit_bar">
+                                            <span className="name">{userName}</span>
                                             <span className="time">{time}</span>
                                             <button className="edit-button" onClick={(e) => handleChatEdit(e, data.chatId)}
                                                 style={{ display: data.editMode || !isMime ? 'none' : '' }}>📝 :編集</button>
@@ -52,10 +54,10 @@ export default function Chat() {
                                             <button className="edit-button" onClick={(e) => handleChatEdited(e, data.chatId, roomUserId)}
                                                 style={{ display: data.editMode && isMime ? '' : 'none' }}>決定</button>
                                         </div>
-                                        <TextareaAutosize className="edit-txt" type="text" value={data.content}
+                                        <TextareaAutosize className="edit-txt" type="text" value={data.content || ''}
                                             onChange={(e) => editChatOnChange(e, data.chatId, idx)}
                                             style={{ display: data.editMode ? '' : 'none' }} />
-                                        <ReactMarkdown className="txt" remarkPlugins={gfm} children={data.content} components={CodeBlock} />
+                                        <ReactMarkdown className="txt" remarkPlugins={[gfm]} children={data.content} components={CodeBlock} />
                                         <div className="reaction_bar">
                                             <button className="c-reaction" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "nice", data.reactions)}>
                                                 👍  {data.reactions?.reduce((p, x) => p + x.nice, 0)}

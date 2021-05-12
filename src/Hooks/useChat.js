@@ -7,11 +7,11 @@ import useUpload from '../Hooks/useUpload'
 
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
 const useChat = () => {
-    const { userId, rooms } = useLoadRooms()
+    const { userId, rooms, roommates } = useLoadRooms()
     const { roomId, setRoomId, messages, setMessages } = useLoadChat()
     const { handleSoundChange, handlePushNotif, hasSound } = usePushNotice()
     const subscribeFiler = e => roomId === e
-    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, setMessages, handlePushNotif, subscribeFiler)
+    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, userId, setMessages, handlePushNotif, subscribeFiler)
     const [content, setContent] = useState('')
     const { uploadFile, setUploadfile, getRootProps, onPasteImageUpload } = useUpload(setContent)
     const [selectRooms, setSelectRooms] = useState([{}])
@@ -45,19 +45,20 @@ const useChat = () => {
     }, [rooms, roomId, setRoomId, setRoomUserId])
 
     const handleInsertClick = async (e) => {
-        const aMessage = {
+        const insertMessage = {
             functionType: "I",
             roomUserId,
             content,
         };
         console.log("chat message-send")
-        console.log(aMessage)
+        console.log(insertMessage)
         const token = loadJson(`token`)
         var chatHeaders = {
             "x-jwt-token": token,
         };
         console.log("chatClient.readyState :" + chatClient.readyState)
-        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(aMessage));
+        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(insertMessage));
+        console.log(content)
         setContent('');
     }
 
@@ -99,6 +100,7 @@ const useChat = () => {
         // enter処理
         if (e.shiftKey === false && e.keyCode === 13) {
             console.log("handleInputEnter=enter")
+            e.preventDefault()
             e.stopPropagation()
             handleInsertClick()
         }
@@ -180,7 +182,7 @@ const useChat = () => {
         handleRoomChange, handleInputEnter, handleInputChange,
         handleInsertClick, handleReactionUpdateClick, handleSoundChange,
         handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, getRootProps, uploadFile,
-        messages, selectRooms, userId, content, setContent, hasSound, roomUserId
+        messages, selectRooms, roommates, userId, content, setContent, hasSound, roomUserId
     }
 }
 export default useChat

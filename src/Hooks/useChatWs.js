@@ -5,7 +5,7 @@ import Stomp from 'stomp-websocket'
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const chatWsUrl = `${API_ENDPOINT}/chat-ws`
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
-const useChatWs = (roomId, setMessages, handlePushNotif = e => e, subscribeFiler = e => e) => {
+const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscribeFiler = e => e) => {
 
     const [isChatSubscribe, setIsChatSubscribe] = useState(false);
     const [roomUserId, setRoomUserId] = useState(0);
@@ -35,7 +35,7 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e, subscribeFiler
                 "x-jwt-token": token,
                 "id": chatSubId
             };
-            chatClient.subscribe('/topic/greetings', function (payload) {
+            chatClient.subscribe(`/user/${userId}/topic/greetings`, function (payload) {
                 console.log('==chat Subscribe Recieved: ' + payload.body);
                 const json = JSON.parse(payload.body)
                 console.log(json);
@@ -50,11 +50,9 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e, subscribeFiler
                     handlePushNotif(json.content)
                 } else if (json.functionType === "U") {
                     setMessages(prevMessages => {
-                        console.log(json.reactions)
                         let target = prevMessages.find(m => m.chatId === json.chatId)
                         target.reactions = json.reactions
                         target.content = json.content ? json.content : target.content
-                        console.log(prevMessages)
                         return [...prevMessages]
                     });
                 } else if (json.functionType === "D") {
@@ -67,15 +65,15 @@ const useChatWs = (roomId, setMessages, handlePushNotif = e => e, subscribeFiler
             }, chatHeaders)
         });
         return () => {
-            console.log('[[chat Disconnecting..]]');
-            chatClient.disconnect();
+            console.log('[[chat Disconnecting..]]')
+            chatClient.disconnect()
         };
-    }, [roomUserId]);
+    }, [roomUserId, roomId]);
 
     const scrollBottom = () => {
         var element = document.documentElement;
         var bottom = element.scrollHeight - element.clientHeight;
-        window.scroll(0, bottom);
+        window.scroll(0, bottom)
     }
 
     return { roomUserId, setRoomUserId, chatClient }

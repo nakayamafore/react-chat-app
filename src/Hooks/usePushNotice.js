@@ -16,7 +16,7 @@ const usePushNotice = (initsound = true) => {
 
     const handlePushNotif = (message = "通知を受信しました！") => {
         console.log("handlePushNotif")
-        if ("Notification" in window) {
+        if ("Notification" in window) { // 通知に対応しているか？
             const notif = new Notification('from Chat', {
                 body: message,
                 image: "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png",
