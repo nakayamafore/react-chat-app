@@ -5,7 +5,7 @@ import Stomp from 'stomp-websocket'
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const chatWsUrl = `${API_ENDPOINT}/chat-ws`
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
-const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscribeFiler = e => e) => {
+const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscribeFiler = e => e, setLastViewedDate = e => e) => {
 
     const [isChatSubscribe, setIsChatSubscribe] = useState(false);
     const [roomUserId, setRoomUserId] = useState(0);
@@ -63,6 +63,22 @@ const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscr
                 }
 
             }, chatHeaders)
+            const chatStateSubId = 'chat-sub-id-002'
+            var chatStateHeaders = {
+                "x-jwt-token": token,
+                "id": chatStateSubId
+            };
+            chatClient.subscribe(`/user/${userId}/topic/chatStatus`, function (payload) {
+                console.log('==chatStatus Subscribe Recieved: ' + payload.body);
+                const json = JSON.parse(payload.body)
+                console.log(json);
+                if (!subscribeFiler(json.roomId)) {
+                    console.log("==cancel Subscribe Recieved: json.roomId: " + json.roomId + ", roomId: " + roomId);
+                    return
+                }
+                console.log("==chatStatus Subscribe Recieved lastViewedDate");
+                setLastViewedDate(json.lastViewedDate)
+            }, chatStateHeaders)
         });
         return () => {
             console.log('[[chat Disconnecting..]]')

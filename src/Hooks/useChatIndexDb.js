@@ -64,25 +64,22 @@ const useChatIndexDb = () => {
             })
         }
         findByRoomId(roomId, setMessages) {
-            return new Promise((resolve, reject) => {
-                this.then(db => {
-                    console.log("findByRoomId.start")
-                    const transaction = db.transaction(store_constants.name, "readonly")
-                    const objectStore = transaction.objectStore(store_constants.name)
-                    const index = objectStore.index('roomId')
-                    console.log(roomId)
-                    const openCursorRequest = index.openCursor(IDBKeyRange.only(roomId), "prev")
-                    openCursorRequest.onsuccess = event => {
-                        console.log("findByRoomId.onsuccess")
-                        let cursor = event.target.result;
-                        if (cursor) {
-                            resolve(cursor.value)
-                            setMessages(prevMessages => [cursor.value, ...prevMessages])
-                            scrollBottom()
-                            cursor.continue();
-                        }
+            this.then(db => {
+                console.log("findByRoomId.start")
+                const transaction = db.transaction(store_constants.name, "readonly")
+                const objectStore = transaction.objectStore(store_constants.name)
+                const index = objectStore.index('roomId')
+                console.log(roomId)
+                const openCursorRequest = index.openCursor(IDBKeyRange.only(roomId), "prev")
+                openCursorRequest.onsuccess = event => {
+                    console.log("findByRoomId.onsuccess")
+                    let cursor = event.target.result;
+                    if (cursor) {
+                        setMessages(prevMessages => [cursor.value, ...prevMessages])
+                        scrollBottom()
+                        cursor.continue();
                     }
-                })
+                }
             })
         }
     }

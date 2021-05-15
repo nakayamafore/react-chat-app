@@ -4,15 +4,23 @@ import * as ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import CodeBlock from '../Components/CodeBlock'
 import dayjs from 'dayjs'
+import { useInView } from 'react-intersection-observer';
 
-const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
-    handleChatEdit, handleChatDeleted, handleChatEdited, editChatOnChange, handleReactionUpdateClick
+const ChatBlock = ({ data, roommates, userId, roomUserId, idx, lastViewedDate,
+    handleChatEdit, handleChatDeleted, handleChatEdited, editChatOnChange, handleReactionUpdateClick, handleVieded
 }) => {
+    const [ref, inView] = useInView({
+        rootMargin: '-50px 0px',
+    })
+
     if (!data) {
         <li key={idx}>
             <div className="pic"></div>
             <div className="txt">--no-data--</div>
         </li>
+    }
+    if (inView) {
+        handleVieded(data.chatId)
     }
     const className = (data.userId === userId) ? "left-side" : "right-side"
     const imageUrl = (data.userId === userId)
@@ -21,16 +29,21 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
     const time = dayjs(data.createdDatetime).format("M[/]D HH:mm");
     const isMime = (data.userId === userId)
     const userName = roommates.find(e => e.userId === data.userId)?.userName;
+    const isRead = data.createdDatetime < lastViewedDate
+    // console.log("isRead :" + isRead)
+    // console.log(data.createdDatetime)
+    // console.log(lastViewedDate)
     return (
         <>
             <li className={className} key={idx}>
                 <div className="pic">
                     <img src={imageUrl} alt={data} />
                 </div>
-                <div className="content">
+                <div className="content" ref={ref}>
                     <div className="edit_bar">
                         <span className="name">{userName}</span>
                         <span className="time">{time}</span>
+                        <span className="name" style={{ display: isRead ? '' : 'none' }}>既読</span>
                         <button className="edit-button" onClick={(e) => handleChatEdit(e, data.chatId)}
                             style={{ display: data.editMode || !isMime ? 'none' : '' }}>📝 :編集</button>
                         <button className="edit-button" onClick={(e) => handleChatDeleted(e, data.chatId)}

@@ -8,10 +8,10 @@ import useUpload from '../Hooks/useUpload'
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
 const useChat = () => {
     const { userId, rooms, roommates } = useLoadRooms()
-    const { roomId, setRoomId, messages, setMessages } = useLoadChat()
+    const { roomId, setRoomId, messages, setMessages, lastViewedDate, setLastViewedDate } = useLoadChat()
     const { handleSoundChange, handlePushNotif, hasSound } = usePushNotice()
     const subscribeFiler = e => roomId === e
-    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, userId, setMessages, handlePushNotif, subscribeFiler)
+    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, userId, setMessages, handlePushNotif, subscribeFiler, setLastViewedDate)
     const [content, setContent] = useState('')
     const { uploadFile, setUploadfile, getRootProps, onPasteImageUpload } = useUpload(setContent)
     const [selectRooms, setSelectRooms] = useState([{}])
@@ -44,7 +44,7 @@ const useChat = () => {
         setRoomUserId(rooms[0].roomUserId)
     }, [rooms, roomId, setRoomId, setRoomUserId])
 
-    const handleInsertClick = async (e) => {
+    const handleInsertClick = (e) => {
         const insertMessage = {
             functionType: "I",
             roomUserId,
@@ -56,8 +56,12 @@ const useChat = () => {
         var chatHeaders = {
             "x-jwt-token": token,
         };
-        console.log("chatClient.readyState :" + chatClient.readyState)
-        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(insertMessage));
+        console.log("chatClient")
+        console.log(chatClient)
+        console.log("chatClient.ws.readyState: :" + chatClient.ws.readyState)
+        if (chatClient && chatClient.ws.readyState === 1) {
+            chatClient.send("/app/chat", chatHeaders, JSON.stringify(insertMessage));
+        }
         console.log(content)
         setContent('');
     }
@@ -85,8 +89,9 @@ const useChat = () => {
         var chatHeaders = {
             "x-jwt-token": token,
         };
-
-        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+        if (chatClient && chatClient.ws.readyState === 1) {
+            await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+        }
         setContent('')
         setUploadfile([])
     }
@@ -136,7 +141,7 @@ const useChat = () => {
         });
         console.log(messages)
     }
-    const handleChatEdited = async (e, chatId) => {
+    const handleChatEdited = (e, chatId) => {
         console.log("handleChatEdited :" + chatId)
         let target = messages.find(m => m.chatId === chatId)
         const request = {
@@ -150,7 +155,9 @@ const useChat = () => {
             "x-jwt-token": token,
         };
 
-        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+        if (chatClient && chatClient.ws.readyState === 1) {
+            chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+        }
 
         setMessages(prevMessages => {
             let targetMessage = prevMessages.find(e => e.chatId === chatId)
@@ -158,7 +165,7 @@ const useChat = () => {
             return [...prevMessages]
         });
     }
-    const handleChatDeleted = async (e, chatId) => {
+    const handleChatDeleted = (e, chatId) => {
         console.log("handleChatDeleted :" + chatId)
         const request = {
             functionType: "D",
@@ -170,19 +177,39 @@ const useChat = () => {
             "x-jwt-token": token,
         };
 
-        await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+        if (chatClient && chatClient.ws.readyState === 1) {
+            chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+        }
 
         setMessages(prevMessages => {
             let replaceMessage = prevMessages.filter(e => e.chatId !== chatId)
             return [...replaceMessage]
         });
     }
+    const handleVieded = (chatId) => {
+        console.log("handleVieded :" + chatId)
+        const request = {
+            roomUserId,
+            roomId,
+            userId,
+            chatId
+        };
+        const token = loadJson(`token`)
+        var chatHeaders = {
+            "x-jwt-token": token,
+        };
+
+        if (chatClient && chatClient.ws.readyState === 1) {
+            chatClient.send("/app/chatState", chatHeaders, JSON.stringify(request));
+        }
+    }
 
     return {
         handleRoomChange, handleInputEnter, handleInputChange,
         handleInsertClick, handleReactionUpdateClick, handleSoundChange,
-        handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, getRootProps, uploadFile,
-        messages, selectRooms, roommates, userId, content, setContent, hasSound, roomUserId
+        handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, handleVieded,
+        getRootProps, uploadFile,
+        messages, selectRooms, roommates, lastViewedDate, userId, content, setContent, hasSound, roomUserId
     }
 }
 export default useChat

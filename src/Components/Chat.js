@@ -6,8 +6,8 @@ import useChat from '../Hooks/useChat'
 const ChatBlock = lazy(() => import('../Components/ChatBlock'))
 export default function Chat() {
     const {
-        handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, getRootProps, uploadFile,
-        messages, selectRooms, roommates, userId, content, setContent, hasSound, roomUserId
+        handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, handleVieded, getRootProps, uploadFile,
+        messages, selectRooms, roommates, lastViewedDate, userId, content, setContent, hasSound, roomUserId
     } = useChat()
 
     return (
@@ -18,6 +18,7 @@ export default function Chat() {
                 })}
             </div>
             <div className="chat-content">
+
                 {messages && <ul className="messages" id="message">
                     {
                         messages.map((data, idx) => {
@@ -26,10 +27,12 @@ export default function Chat() {
                                     <ChatBlock data={data} roommates={roommates} userId={userId} roomUserId={roomUserId}
                                         idx={idx} handleChatEdit={handleChatEdit} handleChatDeleted={handleChatDeleted}
                                         handleChatEdited={handleChatEdited} editChatOnChange={editChatOnChange}
-                                        handleReactionUpdateClick={handleReactionUpdateClick} />
+                                        handleReactionUpdateClick={handleReactionUpdateClick} handleVieded={handleVieded} lastViewedDate={lastViewedDate} />
                                 </Suspense>
                             )
+
                         })
+
                     }
                 </ul>}
                 <div className="input-fooder">
