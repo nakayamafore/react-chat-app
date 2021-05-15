@@ -187,7 +187,6 @@ const useChat = () => {
         });
     }
     const handleVieded = (chatId) => {
-        console.log("handleVieded :" + chatId)
         const request = {
             roomUserId,
             roomId,
@@ -201,6 +200,7 @@ const useChat = () => {
 
         if (chatClient && chatClient.ws.readyState === 1) {
             chatClient.send("/app/chatState", chatHeaders, JSON.stringify(request));
+            chatClient.debug = function (str) { };
         }
     }
 

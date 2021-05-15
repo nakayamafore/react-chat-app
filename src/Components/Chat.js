@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import loading from '../loading.gif';
 import React, { lazy, Suspense } from "react"
 import Navivation from '../Components/Navigation'
 import useChat from '../Hooks/useChat'
@@ -23,7 +24,7 @@ export default function Chat() {
                     {
                         messages.map((data, idx) => {
                             return (
-                                <Suspense fallback={<div>Loding...</div>}>
+                                <Suspense fallback={<div><img src={loading} alt="" /></div>}>
                                     <ChatBlock data={data} roommates={roommates} userId={userId} roomUserId={roomUserId}
                                         idx={idx} handleChatEdit={handleChatEdit} handleChatDeleted={handleChatDeleted}
                                         handleChatEdited={handleChatEdited} editChatOnChange={editChatOnChange}

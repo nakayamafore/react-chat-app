@@ -82,7 +82,9 @@ const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscr
         });
         return () => {
             console.log('[[chat Disconnecting..]]')
-            chatClient.disconnect()
+            if (chatClient && chatClient.ws.readyState === 1) {
+                chatClient.disconnect()
+            }
         };
     }, [roomUserId, roomId]);
 
