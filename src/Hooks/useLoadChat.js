@@ -5,11 +5,10 @@ const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const chatApiUrlBase = `${API_ENDPOINT}/api/chat`
 const chatLastViewedDateApiUrlBase = `${API_ENDPOINT}/api/roomUsers/lastViewedDate`
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
-const useLoadChat = () => {
+const useLoadChat = (lastViewedDate, setLastViewedDate) => {
     const [userId] = useState(loadJson(`userId`));
     const [messages, setMessages] = useState([{ content: "welcome room!" }, { content: "please select room" }])
     const [roomId, setRoomId] = useState(0)
-    const [lastViewedDate, setLastViewedDate] = useState(0)
     const { chatIndexDb } = useChatIndexDb()
 
     useEffect(() => {

@@ -77,6 +77,12 @@ const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscr
                     return
                 }
                 console.log("==chatStatus Subscribe Recieved lastViewedDate");
+                setMessages(prevMessages => {
+                    let target = prevMessages.find(m => m.chatId === json.chatId)
+                    target.reactions = json.reactions
+                    target.lastViewedDate = json.lastViewedDate ? json.lastViewedDate : target.lastViewedDate
+                    return [...prevMessages]
+                });
                 setLastViewedDate(json.lastViewedDate)
             }, chatStateHeaders)
         });

@@ -6,9 +6,9 @@ import usePushNotice from '../Hooks/usePushNotice'
 import useUpload from '../Hooks/useUpload'
 
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
-const useChat = () => {
+const useChat = (lastViewedDate, setLastViewedDate) => {
     const { userId, rooms, roommates } = useLoadRooms()
-    const { roomId, setRoomId, messages, setMessages, lastViewedDate, setLastViewedDate } = useLoadChat()
+    const { roomId, setRoomId, messages, setMessages } = useLoadChat(lastViewedDate, setLastViewedDate)
     const { handleSoundChange, handlePushNotif, hasSound } = usePushNotice()
     const subscribeFiler = e => roomId === e
     const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, userId, setMessages, handlePushNotif, subscribeFiler, setLastViewedDate)

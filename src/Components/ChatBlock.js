@@ -6,7 +6,7 @@ import CodeBlock from '../Components/CodeBlock'
 import dayjs from 'dayjs'
 import { useInView } from 'react-intersection-observer';
 
-const ChatBlock = ({ data, roommates, userId, roomUserId, idx, lastViewedDate,
+const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
     handleChatEdit, handleChatDeleted, handleChatEdited, editChatOnChange, handleReactionUpdateClick, handleVieded
 }) => {
     const [ref, inView] = useInView({
@@ -19,9 +19,7 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx, lastViewedDate,
             <div className="txt">--no-data--</div>
         </li>
     }
-    if (inView) {
-        handleVieded(data.chatId)
-    }
+
     const className = (data.userId === userId) ? "left-side" : "right-side"
     const imageUrl = (data.userId === userId)
         ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
@@ -29,7 +27,10 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx, lastViewedDate,
     const time = dayjs(data.createdDatetime).format("M[/]D HH:mm");
     const isMime = (data.userId === userId)
     const userName = roommates.find(e => e.userId === data.userId)?.userName;
-    const isRead = data.createdDatetime < lastViewedDate
+    const isRead = data.createdDatetime < data.lastViewedDate
+    if (inView && !isRead && !isMime) {
+        handleVieded(data.chatId)
+    }
     // console.log("isRead :" + isRead)
     // console.log(data.createdDatetime)
     // console.log(lastViewedDate)

@@ -1,16 +1,16 @@
 /* eslint-disable no-undef */
 import loading from '../loading.gif';
-import React, { lazy, Suspense } from "react"
+import React, { useState, lazy, Suspense } from "react"
 import Navivation from '../Components/Navigation'
 import useChat from '../Hooks/useChat'
 
 const ChatBlock = lazy(() => import('../Components/ChatBlock'))
 export default function Chat() {
+    const [lastViewedDate, setLastViewedDate] = useState('')
     const {
         handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, handleVieded, getRootProps, uploadFile,
-        messages, selectRooms, roommates, lastViewedDate, userId, content, setContent, hasSound, roomUserId
-    } = useChat()
-
+        messages, selectRooms, roommates, userId, content, setContent, hasSound, roomUserId
+    } = useChat(lastViewedDate, setLastViewedDate)
     return (
         <div className="wrapper">
             <div className="room-bar">
@@ -22,17 +22,22 @@ export default function Chat() {
 
                 {messages && <ul className="messages" id="message">
                     {
-                        messages.map((data, idx) => {
-                            return (
-                                <Suspense fallback={<div><img src={loading} alt="" /></div>}>
-                                    <ChatBlock data={data} roommates={roommates} userId={userId} roomUserId={roomUserId}
-                                        idx={idx} handleChatEdit={handleChatEdit} handleChatDeleted={handleChatDeleted}
-                                        handleChatEdited={handleChatEdited} editChatOnChange={editChatOnChange}
-                                        handleReactionUpdateClick={handleReactionUpdateClick} handleVieded={handleVieded} lastViewedDate={lastViewedDate} />
-                                </Suspense>
-                            )
+                        messages
+                            .map((data) => {
+                                data.lastViewedDate = lastViewedDate
+                                return data
+                            })
+                            .map((data, idx) => {
+                                return (
+                                    <Suspense fallback={<div><img src={loading} alt="" /></div>}>
+                                        <ChatBlock data={data} roommates={roommates} userId={userId} roomUserId={roomUserId}
+                                            idx={idx} handleChatEdit={handleChatEdit} handleChatDeleted={handleChatDeleted}
+                                            handleChatEdited={handleChatEdited} editChatOnChange={editChatOnChange}
+                                            handleReactionUpdateClick={handleReactionUpdateClick} handleVieded={handleVieded} />
+                                    </Suspense>
+                                )
 
-                        })
+                            })
 
                     }
                 </ul>}
