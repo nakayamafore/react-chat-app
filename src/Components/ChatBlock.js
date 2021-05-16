@@ -10,7 +10,7 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
     handleChatEdit, handleChatDeleted, handleChatEdited, editChatOnChange, handleReactionUpdateClick, handleVieded
 }) => {
     const [ref, inView] = useInView({
-        rootMargin: '-50px 0px',
+        rootMargin: '0px 0px',
     })
 
     if (!data) {
@@ -31,9 +31,6 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
     if (inView && !isRead && !isMime) {
         handleVieded(data.chatId)
     }
-    // console.log("isRead :" + isRead)
-    // console.log(data.createdDatetime)
-    // console.log(lastViewedDate)
     return (
         <>
             <li className={className} key={idx}>

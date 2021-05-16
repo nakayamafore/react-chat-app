@@ -6,12 +6,13 @@ import usePushNotice from '../Hooks/usePushNotice'
 import useUpload from '../Hooks/useUpload'
 
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
-const useChat = (lastViewedDate, setLastViewedDate) => {
+const useChat = (lastViewedDate, setLastViewedDate, hasSound, setHasSound) => {
     const { userId, rooms, roommates } = useLoadRooms()
     const { roomId, setRoomId, messages, setMessages } = useLoadChat(lastViewedDate, setLastViewedDate)
-    const { handleSoundChange, handlePushNotif, hasSound } = usePushNotice()
+    console.log("hasSound-useChat.js :" + hasSound)
+    const { handleSoundChange, handlePushNotif } = usePushNotice(setHasSound)
     const subscribeFiler = e => roomId === e
-    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, userId, setMessages, handlePushNotif, subscribeFiler, setLastViewedDate)
+    const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, userId, setMessages, handlePushNotif, subscribeFiler, setLastViewedDate, hasSound)
     const [content, setContent] = useState('')
     const { uploadFile, setUploadfile, getRootProps, onPasteImageUpload } = useUpload(setContent)
     const [selectRooms, setSelectRooms] = useState([{}])
@@ -62,7 +63,6 @@ const useChat = (lastViewedDate, setLastViewedDate) => {
         if (chatClient && chatClient.ws.readyState === 1) {
             chatClient.send("/app/chat", chatHeaders, JSON.stringify(insertMessage));
         }
-        console.log(content)
         setContent('');
     }
 

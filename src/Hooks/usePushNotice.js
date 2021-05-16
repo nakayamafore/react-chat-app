@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react"
-
-const usePushNotice = (initsound = true) => {
-    const [hasSound, setHasSound] = useState(initsound);
+import { useEffect } from "react"
+import noticeSound from "../Sound/jr.mp3"
+const usePushNotice = (setHasSound) => {
     useEffect(() => {
         if ("Notification" in window) {
             // 通知が許可されていたらキャンセル
@@ -14,8 +13,9 @@ const usePushNotice = (initsound = true) => {
         }
     }, []);
 
-    const handlePushNotif = (message = "通知を受信しました！") => {
+    const handlePushNotif = (hasSound, message = "通知を受信しました！") => {
         console.log("handlePushNotif")
+        console.log("hasSound-usePushNotice.js :" + hasSound)
         if ("Notification" in window) { // 通知に対応しているか？
             const notif = new Notification('from Chat', {
                 body: message,
@@ -29,13 +29,13 @@ const usePushNotice = (initsound = true) => {
                 // 状態によって音の有無を変える
                 if (hasSound) {
                     // 音再生
-                    // new Audio("../Sound/jr.mp3").play();
+                    new Audio(noticeSound).play();
                 }
             });
         }
     };
     const handleSoundChange = () => setHasSound((prev) => !prev)
 
-    return { handleSoundChange, handlePushNotif, hasSound }
+    return { handleSoundChange, handlePushNotif }
 }
 export default usePushNotice

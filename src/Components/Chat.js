@@ -7,10 +7,12 @@ import useChat from '../Hooks/useChat'
 const ChatBlock = lazy(() => import('../Components/ChatBlock'))
 export default function Chat() {
     const [lastViewedDate, setLastViewedDate] = useState('')
+    const [hasSound, setHasSound] = useState('')
     const {
         handleRoomChange, handleInputEnter, handleInputChange, handleSoundChange, handleReactionUpdateClick, handleChatEdit, editChatOnChange, handleChatEdited, handleChatDeleted, handleVieded, getRootProps, uploadFile,
-        messages, selectRooms, roommates, userId, content, setContent, hasSound, roomUserId
-    } = useChat(lastViewedDate, setLastViewedDate)
+        messages, selectRooms, roommates, userId, content, setContent, roomUserId
+    } = useChat(lastViewedDate, setLastViewedDate, hasSound, setHasSound)
+    console.log("hasSound :" + hasSound)
     return (
         <div className="wrapper">
             <div className="room-bar">
