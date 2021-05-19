@@ -9,7 +9,6 @@ const loadJson = key => key && JSON.parse(localStorage.getItem(key))
 const useChat = (lastViewedDate, setLastViewedDate, hasSound, setHasSound) => {
     const { userId, rooms, roommates } = useLoadRooms()
     const { roomId, setRoomId, messages, setMessages } = useLoadChat(lastViewedDate, setLastViewedDate)
-    console.log("hasSound-useChat.js :" + hasSound)
     const { handleSoundChange, handlePushNotif } = usePushNotice(setHasSound)
     const subscribeFiler = e => roomId === e
     const { roomUserId, setRoomUserId, chatClient } = useChatWs(roomId, userId, setMessages, handlePushNotif, subscribeFiler, setLastViewedDate, hasSound)
@@ -61,7 +60,7 @@ const useChat = (lastViewedDate, setLastViewedDate, hasSound, setHasSound) => {
         console.log(chatClient)
         console.log("chatClient.ws.readyState: :" + chatClient.ws.readyState)
         if (chatClient && chatClient.ws.readyState === 1) {
-            chatClient.send("/app/chat", chatHeaders, JSON.stringify(insertMessage));
+            chatClient.send("/api/app/chat", chatHeaders, JSON.stringify(insertMessage));
         }
         setContent('');
     }
@@ -90,7 +89,7 @@ const useChat = (lastViewedDate, setLastViewedDate, hasSound, setHasSound) => {
             "x-jwt-token": token,
         };
         if (chatClient && chatClient.ws.readyState === 1) {
-            await chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+            await chatClient.send("/api/app/chat", chatHeaders, JSON.stringify(request));
         }
         setContent('')
         setUploadfile([])
@@ -156,7 +155,7 @@ const useChat = (lastViewedDate, setLastViewedDate, hasSound, setHasSound) => {
         };
 
         if (chatClient && chatClient.ws.readyState === 1) {
-            chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+            chatClient.send("/api/app/chat", chatHeaders, JSON.stringify(request));
         }
 
         setMessages(prevMessages => {
@@ -178,7 +177,7 @@ const useChat = (lastViewedDate, setLastViewedDate, hasSound, setHasSound) => {
         };
 
         if (chatClient && chatClient.ws.readyState === 1) {
-            chatClient.send("/app/chat", chatHeaders, JSON.stringify(request));
+            chatClient.send("/api/app/chat", chatHeaders, JSON.stringify(request));
         }
 
         setMessages(prevMessages => {
@@ -199,7 +198,7 @@ const useChat = (lastViewedDate, setLastViewedDate, hasSound, setHasSound) => {
         };
 
         if (chatClient && chatClient.ws.readyState === 1) {
-            chatClient.send("/app/chatState", chatHeaders, JSON.stringify(request));
+            chatClient.send("/api/app/chatState", chatHeaders, JSON.stringify(request));
             chatClient.debug = function (str) { };
         }
     }

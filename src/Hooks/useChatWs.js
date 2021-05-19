@@ -3,7 +3,7 @@ import SockJS from 'sockjs-client'
 import Stomp from 'stomp-websocket'
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-const chatWsUrl = `${API_ENDPOINT}/chat-ws`
+const chatWsUrl = `${API_ENDPOINT}/api/chat-ws`
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
 const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscribeFiler = e => e, setLastViewedDate = e => e, hasSound) => {
 
@@ -35,7 +35,7 @@ const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscr
                 "x-jwt-token": token,
                 "id": chatSubId
             };
-            chatClient.subscribe(`/user/${userId}/topic/greetings`, function (payload) {
+            chatClient.subscribe(`/api/user/${userId}/topic/greetings`, function (payload) {
                 console.log('==chat Subscribe Recieved: ' + payload.body);
                 const json = JSON.parse(payload.body)
                 console.log(json);
@@ -68,7 +68,7 @@ const useChatWs = (roomId, userId, setMessages, handlePushNotif = e => e, subscr
                 "x-jwt-token": token,
                 "id": chatStateSubId
             };
-            chatClient.subscribe(`/user/${userId}/topic/chatStatus`, function (payload) {
+            chatClient.subscribe(`/api/user/${userId}/topic/chatStatus`, function (payload) {
                 console.log('==chatStatus Subscribe Recieved: ' + payload.body);
                 const json = JSON.parse(payload.body)
                 console.log(json);

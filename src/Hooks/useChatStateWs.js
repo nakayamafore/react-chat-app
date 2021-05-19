@@ -3,7 +3,7 @@ import SockJS from 'sockjs-client'
 import Stomp from 'stomp-websocket'
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-const chatWsUrl = `${API_ENDPOINT}/chat-ws`
+const chatWsUrl = `${API_ENDPOINT}/api/chat-ws`
 const loadJson = key => key && JSON.parse(localStorage.getItem(key))
 const useChatStateWs = (roomUserId, roomId, userId, subscribeFiler = e => e, lastViewedDate, setLastViewedDate = e => e) => {
 
