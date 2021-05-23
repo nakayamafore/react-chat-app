@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 const saveJSON = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
-const loginUrl = `${API_ENDPOINT}/login`
+const loginUrl = `${API_ENDPOINT}/api/login`
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
