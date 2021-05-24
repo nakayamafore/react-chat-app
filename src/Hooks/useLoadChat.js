@@ -50,7 +50,7 @@ const useLoadChat = (lastViewedDate, setLastViewedDate) => {
         // indexedDbから取得
         const loadCashChatData = e => {
             setMessages([{ content: `welcome room${roomId}!` }]);
-            // chatIndexDb.findByRoomId(roomId, setMessages)
+            //chatIndexDb.findByRoomId(roomId, setMessages)
         }
         loadCashChatData()
     }, [roomId])

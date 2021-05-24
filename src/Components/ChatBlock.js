@@ -4,6 +4,8 @@ import * as ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import CodeBlock from '../Components/CodeBlock'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc.js'
+import timezone from 'dayjs/plugin/timezone.js'
 import { useInView } from 'react-intersection-observer';
 
 const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
@@ -12,6 +14,9 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
     const [ref, inView] = useInView({
         rootMargin: '0px 0px',
     })
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    dayjs.tz.setDefault('Asia/Tokyo')
 
     if (!data) {
         <li key={idx}>
@@ -24,7 +29,7 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
     const imageUrl = (data.userId === userId)
         ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
         : "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png"
-    const time = dayjs(data.createdDatetime).format("M[/]D HH:mm");
+    const time = dayjs(data.createdDatetime).tz().format("M[/]D HH:mm");
     const isMime = (data.userId === userId)
     const userName = roommates.find(e => e.userId === data.userId)?.userName;
     const isRead = data.createdDatetime < data.lastViewedDate
@@ -52,7 +57,7 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
                     <TextareaAutosize className="edit-txt" type="text" value={data.content || ''}
                         onChange={(e) => editChatOnChange(e, data.chatId, idx)}
                         style={{ display: data.editMode ? '' : 'none' }} />
-                    <ReactMarkdown className="txt" remarkPlugins={[gfm]} children={data.content} components={CodeBlock} />
+                    <ReactMarkdown className="txt" parserOptions={{ commonmark: true }} remarkPlugins={[gfm]} children={data.content} components={CodeBlock} />
                     <div className="reaction_bar">
                         <button className="c-reaction" onClick={(e) => handleReactionUpdateClick(e, data.chatId, roomUserId, "nice", data.reactions)}>
                             👍  {data.reactions?.reduce((p, x) => p + x.nice, 0)}
