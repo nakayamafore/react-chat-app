@@ -95,6 +95,7 @@ li.right-side {
 .pic {
   width: 80px;
   text-align: center;
+  display: block;
 }
 
 .pic img {
@@ -131,7 +132,6 @@ li.right-side {
   line-height: 1.8;
   font-size: 0.8em;
   white-space: normal;
-  overflow:scroll;
   position: relative; /* 相対位置 */
 }
 .txt > p {
@@ -154,7 +154,26 @@ li.right-side {
 .txt > ul > li {
   margin-top: 2px;
   list-style: inherit;
+  list-style-type: disc;
   text-align: left;
+  display: list-item;
+}
+.txt > ul > li > ul > li  {
+  margin-top: 2px;
+  list-style: inherit;
+  list-style-type: circle;
+  text-align: left;
+  display: list-item;
+}
+.txt > ul > li > ul > li > ul > li {
+  margin-top: 2px;
+  list-style: inherit;
+  list-style-type: square;
+  text-align: left;
+  display: list-item;
+}
+.txt > ul > li.task-list-item {
+  display: flex;
 }
 .txt > ol {
   padding-left: 22px;
@@ -166,15 +185,31 @@ li.right-side {
   list-style: decimal;
   list-style-type: decimal;
   text-align: left;
+  display: list-item;
 }
-.txt > blockquote {
+.txt > blockquote, .txt > blockquote  > blockquote, .txt > blockquote  > blockquote  > blockquote, .txt > blockquote  > blockquote  > blockquote  > blockquote   {
   margin: 1em 1em 1em 1.6em;
-  padding: 8px;
-  white-space: pre-line;
+  padding: 5px;
   background-color: #fafafa;
   border: 1px solid #e2e2e2;
   border-radius: 3px;
   overflow:scroll;
+  display: block;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+.txt > blockquote::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    height: 100%;
+    width: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-right: 2px solid var(--color-c);
+    z-index: 3;
 }
 .txt > blockquote > p {
   margin: 0px;
@@ -183,6 +218,17 @@ li.right-side {
   width: 100%; /* or any custom size */
   height: 100%; 
   object-fit: contain;
+}
+.txt table {
+  width: 100%;
+}
+.txt th {
+  text-align: center;
+  vertical-align: middle;
+}
+.txt table, td, th {
+  border: 1px #000000 solid;
+  border-collapse: collapse;
 }
 .name {
   position: relative; /* 相対位置 */
@@ -198,8 +244,9 @@ li.right-side {
 }
 .txt::before {
   content: '';
-  width: 0;
-  height: 0;
+  width: 2px;
+  height: 2px;
+  display: block;
   border: 8px solid transparent;
   position: absolute; /* 絶対位置 */
 }

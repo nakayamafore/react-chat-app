@@ -27,9 +27,10 @@ const ChatBlock = ({ data, roommates, userId, roomUserId, idx,
 
     const className = (data.userId === userId) ? "left-side" : "right-side"
     const imageUrl = (data.userId === userId)
-        ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
-        : "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png"
-    const time = dayjs(data.createdDatetime).tz().format("M[/]D HH:mm");
+        ? "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/pregident.png"
+        : "https://s3-ap-northeast-1.amazonaws.com/mable.bucket/comander.png"
+
+    const time = dayjs(data.createdDatetime).tz('Asia/Tokyo').format("M[/]D HH:mm");
     const isMime = (data.userId === userId)
     const userName = roommates.find(e => e.userId === data.userId)?.userName;
     const isRead = data.createdDatetime < data.lastViewedDate
